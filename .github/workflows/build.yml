@@ -18,21 +18,23 @@ jobs:
         with:
           version: '8.0.x'
 
-      - name: Restore and Publish EXE
+      - name: Restore и Publish
         run: |
           cd csharp
           dotnet restore
-          dotnet publish -r win-x64 -p:PublishSingleFile=true --self-contained -c Release
+          dotnet publish -r win-x64 -p:PublishSingleFile=true --self-contained -c Release --output ./publish
 
-      - name: Save EXE to builds branch
+      - name: Сохраняем EXE в ветке builds
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd bin\Release\net8.0-windows\win-x64\publish
+          cd csharp\publish
           git init
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+
           git add .
-          git commit -m "Auto-build EXE"
+          git commit -m "Build: rf-bot.exe"
+
           git remote add origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
           git push -f origin HEAD:builds

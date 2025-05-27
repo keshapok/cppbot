@@ -1,4 +1,4 @@
-name: Build RF Bot
+name: Build RF Bot EXE
 
 on:
   push:
@@ -13,19 +13,37 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup .NET
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           version: '8.0.x'
 
-      - name: Restore and Publish
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Publish single EXE file
         run: |
-          cd csharp
-          dotnet restore
           dotnet publish -r win-x64 -p:PublishSingleFile=true --self-contained -c Release
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: rf-bot-exe
-          path: csharp/bin/Release/net8.0-windows/win-x64/publish/
+      - name: Commit and Push EXE
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd bin\Release\net8.0-windows\win-x64\publish
+          echo "Создаем временную папку для EXE"
+          mkdir ../../../../../output
+          cp *.exe ../../../../../output/
+          cd ../../../../../output
+
+          echo "Инициализируем Git"
+          git config --local user.email "bot@example.com"
+          git config --local user.name "Bot"
+
+          echo "Добавляем EXE в Git"
+          git init
+          git add .
+          git commit -m "Build: rf-bot.exe"
+
+          echo "Пушим EXE в отдельный бранч"
+          git remote add origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+          git push -f origin HEAD:builds

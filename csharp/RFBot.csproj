@@ -12,6 +12,7 @@
     <Platforms>x64</Platforms>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <NoWarn>$(NoWarn);NU1701;NU1603</NoWarn>
+    <OutputPath>publish</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

@@ -6,8 +6,9 @@ namespace RFBot
 {
     public static class KeyboardHook
     {
-        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
         private static IntPtr _hookID = IntPtr.Zero;
+
+        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         public static void Start()
         {
@@ -16,14 +17,12 @@ namespace RFBot
 
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0 && wParam == (IntPtr)0x0100)
+            if (nCode >= 0 && wParam == (IntPtr)0x0100) // WM_KEYDOWN
             {
                 int vkCode = Marshal.ReadInt32(lParam);
                 if ((Keys)vkCode == Keys.F10)
                 {
-                    MainForm mainForm = Application.OpenForms["MainForm"] as MainForm;
-                    if (mainForm != null)
-                        mainForm.ToggleBot();
+                    MainForm.Instance?.ToggleBot();
                 }
             }
             return CallNextHookEx(_hookID, nCode, wParam, lParam);
@@ -32,7 +31,7 @@ namespace RFBot
         private static IntPtr SetHook(LowLevelKeyboardProc proc)
         {
             IntPtr hInstance = GetModuleHandle(null);
-            return SetWindowsHookEx(13, proc, hInstance, 0);
+            return SetWindowsHookEx(13, proc, hInstance, 0); // WH_KEYBOARD_LL = 13
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]

@@ -6,9 +6,8 @@ namespace RFBot
 {
     public static class KeyboardHook
     {
-        private static IntPtr _hookID = IntPtr.Zero;
-
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+        private static IntPtr _hookID = IntPtr.Zero;
 
         public static void Start()
         {
@@ -22,6 +21,7 @@ namespace RFBot
                 int vkCode = Marshal.ReadInt32(lParam);
                 if ((Keys)vkCode == Keys.F10)
                 {
+                    // Используем Singleton Instance вместо OpenForms
                     MainForm.Instance?.ToggleBot();
                 }
             }

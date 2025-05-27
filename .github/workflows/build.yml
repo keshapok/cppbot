@@ -1,40 +1,14 @@
-name: Build RF Bot EXE
+- name: Save EXE to builds branch
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: |
+    cd csharp\publish
+    git init
+    git config user.name "GitHub Actions"
+    git config user.email "actions@github.com"
 
-on:
-  push:
-    branches:
-      - main
+    git add .
+    git commit -m "Build: rf-bot.exe"
 
-jobs:
-  build:
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Restore и Publish
-        run: |
-          cd csharp
-          dotnet restore
-          dotnet publish -r win-x64 -p:PublishSingleFile=true --self-contained -c Release --output ./publish
-
-      - name: Сохраняем EXE в ветке builds
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cd csharp\publish
-          git init
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-
-          git add .
-          git commit -m "Build: rf-bot.exe"
-
-          git remote add origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-          git push -f origin HEAD:builds
+    git remote add origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+    git push -f origin HEAD:builds

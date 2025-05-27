@@ -1,12 +1,10 @@
-using System.Drawing;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RFBot
 {
     public partial class MainForm : Form
     {
-        public static MainForm Instance { get; private set; }
+        public static MainForm? Instance { get; private set; }
 
         private bool _botActive = false;
 

@@ -24,8 +24,20 @@ jobs:
           dotnet restore
           dotnet publish -r win-x64 -p:PublishSingleFile=true --self-contained -c Release
 
-      - name: Upload EXE как артефакт
-        uses: actions/upload-artifact@v3
-        with:
-          name: rf-bot-exe
-          path: csharp/bin/Release/net8.0-windows/win-x64/publish/
+      - name: Настройка Git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd bin\Release\net8.0-windows\win-x64\publish
+          git init
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+          echo "Создаем файл с результатом сборки"
+          echo "Build completed at $(date)" > build-info.txt
+
+          git add .
+          git commit -m "Build: rf-bot.exe"
+
+          git remote add origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+          git push -f origin HEAD:builds

@@ -5,8 +5,10 @@ namespace RFBot
 {
     public partial class MainForm : Form
     {
-        private static MainForm? Instance;
-        private bool _botActive = false;
+        // Полностью безопасный nullable Singleton
+        public static MainForm? Instance { get; private set; }
+
+        public bool BotActive { get; private set; } = false;
 
         public MainForm()
         {
@@ -25,9 +27,14 @@ namespace RFBot
         {
             while (true)
             {
-                // Тут будет логика бота
                 await Task.Delay(10);
             }
+        }
+
+        public void ToggleBot()
+        {
+            BotActive = !BotActive;
+            Console.WriteLine($"[F10] Бот: {(BotActive ? "Активен" : "Неактивен")}");
         }
     }
 }

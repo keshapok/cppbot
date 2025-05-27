@@ -18,13 +18,13 @@ jobs:
         with:
           version: '8.0.x'
 
-      - name: Restore и Publish
+      - name: Restore and Publish EXE
         run: |
           cd csharp
           dotnet restore
           dotnet publish -r win-x64 -p:PublishSingleFile=true --self-contained -c Release
 
-      - name: Настройка Git
+      - name: Save EXE to builds branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -32,12 +32,7 @@ jobs:
           git init
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-
-          echo "Создаем файл с результатом сборки"
-          echo "Build completed at $(date)" > build-info.txt
-
           git add .
-          git commit -m "Build: rf-bot.exe"
-
+          git commit -m "Auto-build EXE"
           git remote add origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
           git push -f origin HEAD:builds

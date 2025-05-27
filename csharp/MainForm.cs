@@ -5,8 +5,7 @@ namespace RFBot
 {
     public partial class MainForm : Form
     {
-        public static MainForm? Instance { get; private set; }
-
+        private static MainForm? Instance;
         private bool _botActive = false;
 
         public MainForm()
@@ -24,18 +23,11 @@ namespace RFBot
 
         public async Task RunAsync()
         {
-            KeyboardHook.Start();
-
             while (true)
             {
+                // Тут будет логика бота
                 await Task.Delay(10);
             }
-        }
-
-        public void ToggleBot()
-        {
-            _botActive = !_botActive;
-            Console.WriteLine($"[F10] Бот: {_botActive}");
         }
     }
 }

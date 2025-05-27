@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenCvSharp;
+using RFBot;
 
 namespace RFBot
 {
